@@ -2427,8 +2427,7 @@ dependencies = [
 [[package]]
 name = "hyper"
 version = "1.5.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "256fb8d4bd6413123cc9d91832d78325c48ff41677595be797d90f42969beae0"
+source = "git+https://github.com/mvniekerk/hyper?branch=wasix-v1.5.2#2550e80050ea6e122729ca3ab35842af9aeaf186"
 dependencies = [
  "bytes",
  "futures-channel",
@@ -2507,7 +2506,7 @@ dependencies = [
 [[package]]
 name = "hyper-util"
 version = "0.1.10"
-source = "git+https://github.com/mvniekerk/hyper-util.git?branch=master#5cc0ccdaeeff699c2afb9a32dd8b347c1c20d042"
+source = "git+https://github.com/mvniekerk/hyper-util.git?branch=master#b6dea914d1b599f19b16c9b553d58fc6db532d29"
 dependencies = [
  "bytes",
  "futures-channel",
@@ -5337,7 +5336,7 @@ checksum = "1b6b67fb9a61334225b5b790716f609cd58395f895b3fe8b328786812a40bc3b"
 [[package]]
 name = "socket2"
 version = "0.5.5"
-source = "git+https://github.com/mvniekerk/socket2?branch=v0.5.5#b6b64e5ae38d481078b837645605408a7a07caa9"
+source = "git+https://github.com/mvniekerk/socket2?branch=v0.5.5#1ba3522b5122fec7d09ca0bee64b9d9e8c486e3a"
 dependencies = [
  "libc 0.2.155",
  "windows-sys 0.48.0",

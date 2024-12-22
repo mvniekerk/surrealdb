@@ -19,7 +19,7 @@ default = [
     "storage-mem",
     "storage-surrealkv",
     "storage-surrealcs",
-    "storage-rocksdb",
+#    "storage-rocksdb",
     "scripting",
     "http",
 ]
@@ -169,3 +169,4 @@ parking_lot = { git = "https://github.com/mvniekerk/parking_lot", branch = "mast
 socket2 = { git = "https://github.com/mvniekerk/socket2", branch = "v0.5.5" }
 tokio = { git = "https://github.com/mvniekerk/tokio", branch = "wasix-1.42.0" }
 hyper-util = { git = "https://github.com/mvniekerk/hyper-util.git", branch = "master" }
+hyper = { git = "https://github.com/mvniekerk/hyper", branch = "wasix-v1.5.2" }
