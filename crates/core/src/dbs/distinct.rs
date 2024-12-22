@@ -3,9 +3,9 @@ use crate::dbs::Processed;
 use crate::kvs::Key;
 use radix_trie::Trie;
 use std::default::Default;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use std::sync::Arc;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use tokio::sync::Mutex;
 
 // TODO: This is currently processed in memory. In the future is should be on disk (mmap?)
@@ -40,13 +40,13 @@ impl SyncDistinct {
 	}
 }
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 #[derive(Default, Clone)]
 pub(crate) struct AsyncDistinct {
 	processed: Arc<Mutex<SyncDistinct>>,
 }
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 impl AsyncDistinct {
 	pub(super) fn new(ctx: &Context) -> Option<Self> {
 		if let Some(pla) = ctx.get_query_planner() {

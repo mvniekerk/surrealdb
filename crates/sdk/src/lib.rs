@@ -110,7 +110,7 @@
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![cfg_attr(test, deny(warnings))]
 
-#[cfg(all(target_arch = "wasm32", feature = "ml"))]
+#[cfg(all(target_arch = "wasm32", not(target_os = "wasi"), feature = "ml"))]
 compile_error!("The `ml` feature is not supported on the `wasm32` architecture.");
 
 #[macro_use]

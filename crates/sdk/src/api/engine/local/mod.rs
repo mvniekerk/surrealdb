@@ -31,12 +31,12 @@ use crate::{
 	value::Notification,
 };
 use channel::Sender;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use futures::stream::poll_fn;
 use indexmap::IndexMap;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use std::pin::pin;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use std::task::{ready, Poll};
 use std::{
 	collections::{BTreeMap, HashMap},
@@ -58,15 +58,15 @@ use surrealdb_core::{
 		Data, Field, Output, Query, Statement, Value as CoreValue,
 	},
 };
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use tokio_util::bytes::BytesMut;
 use uuid::Uuid;
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use std::{future::Future, path::PathBuf};
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use surrealdb_core::err::Error as CoreError;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use tokio::{
 	fs::OpenOptions,
 	io::{self, AsyncReadExt, AsyncWriteExt},
@@ -75,11 +75,11 @@ use tokio::{
 #[cfg(feature = "ml")]
 use surrealdb_core::sql::Model;
 
-#[cfg(all(not(target_arch = "wasm32"), feature = "ml"))]
+#[cfg(all(not(all(target_arch = "wasm32", not(target_os = "wasi"))), feature = "ml"))]
 use crate::api::conn::MlExportConfig;
-#[cfg(all(not(target_arch = "wasm32"), feature = "ml"))]
+#[cfg(all(not(all(target_arch = "wasm32", not(target_os = "wasi"))), feature = "ml"))]
 use futures::StreamExt;
-#[cfg(all(not(target_arch = "wasm32"), feature = "ml"))]
+#[cfg(all(not(all(target_arch = "wasm32", not(target_os = "wasi"))), feature = "ml"))]
 use surrealdb_core::{
 	iam::{check::check_ns_db, Action, ResourceKind},
 	kvs::{LockType, TransactionType},
@@ -89,9 +89,9 @@ use surrealdb_core::{
 
 use super::resource_to_values;
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 pub(crate) mod native;
-#[cfg(target_arch = "wasm32")]
+#[cfg(all(target_arch = "wasm32", not(target_os = "wasi")))]
 pub(crate) mod wasm;
 
 /// In-memory database
@@ -473,7 +473,7 @@ async fn take(one: bool, responses: Vec<Response>) -> Result<CoreValue> {
 	}
 }
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 async fn export_file(
 	kvs: &Datastore,
 	sess: &Session,
@@ -496,7 +496,7 @@ async fn export_file(
 	Ok(())
 }
 
-#[cfg(all(not(target_arch = "wasm32"), feature = "ml"))]
+#[cfg(all(not(all(target_arch = "wasm32", not(target_os = "wasi"))), feature = "ml"))]
 async fn export_ml(
 	kvs: &Datastore,
 	sess: &Session,
@@ -525,7 +525,7 @@ async fn export_ml(
 	Ok(())
 }
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 async fn copy<'a, R, W>(
 	path: PathBuf,
 	reader: &'a mut R,
@@ -778,7 +778,7 @@ async fn router(
 			Ok(DbResponse::Query(response))
 		}
 
-		#[cfg(target_arch = "wasm32")]
+		#[cfg(all(target_arch = "wasm32", not(target_os = "wasi")))]
 		Command::ExportFile {
 			..
 		}
@@ -789,7 +789,7 @@ async fn router(
 			..
 		} => Err(crate::api::Error::BackupsNotSupported.into()),
 
-		#[cfg(any(target_arch = "wasm32", not(feature = "ml")))]
+		#[cfg(any(all(target_arch = "wasm32", not(target_os = "wasi")), not(feature = "ml")))]
 		Command::ExportMl {
 			..
 		}
@@ -800,7 +800,7 @@ async fn router(
 			..
 		} => Err(crate::api::Error::BackupsNotSupported.into()),
 
-		#[cfg(not(target_arch = "wasm32"))]
+		#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 		Command::ExportFile {
 			path: file,
 			config,
@@ -847,7 +847,7 @@ async fn router(
 			Ok(DbResponse::Other(CoreValue::None))
 		}
 
-		#[cfg(all(not(target_arch = "wasm32"), feature = "ml"))]
+		#[cfg(all(not(all(target_arch = "wasm32", not(target_os = "wasi"))), feature = "ml"))]
 		Command::ExportMl {
 			path,
 			config,
@@ -894,7 +894,7 @@ async fn router(
 			Ok(DbResponse::Other(CoreValue::None))
 		}
 
-		#[cfg(not(target_arch = "wasm32"))]
+		#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 		Command::ExportBytes {
 			bytes,
 			config,
@@ -923,7 +923,7 @@ async fn router(
 
 			Ok(DbResponse::Other(CoreValue::None))
 		}
-		#[cfg(all(not(target_arch = "wasm32"), feature = "ml"))]
+		#[cfg(all(not(all(target_arch = "wasm32", not(target_os = "wasi"))), feature = "ml"))]
 		Command::ExportBytesMl {
 			bytes,
 			config,
@@ -952,7 +952,7 @@ async fn router(
 
 			Ok(DbResponse::Other(CoreValue::None))
 		}
-		#[cfg(not(target_arch = "wasm32"))]
+		#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 		Command::ImportFile {
 			path,
 		} => {
@@ -999,7 +999,7 @@ async fn router(
 
 			Ok(DbResponse::Other(CoreValue::None))
 		}
-		#[cfg(all(not(target_arch = "wasm32"), feature = "ml"))]
+		#[cfg(all(not(all(target_arch = "wasm32", not(target_os = "wasi"))), feature = "ml"))]
 		Command::ImportMl {
 			path,
 		} => {

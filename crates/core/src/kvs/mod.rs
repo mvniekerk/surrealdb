@@ -38,7 +38,7 @@ mod tikv;
 
 pub(crate) mod cache;
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 mod index;
 #[cfg(any(
 	feature = "kv-tikv",
@@ -51,7 +51,7 @@ mod savepoint;
 mod tests;
 
 pub use self::ds::*;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 pub(crate) use self::index::*;
 pub use self::kv::*;
 pub use self::live::*;

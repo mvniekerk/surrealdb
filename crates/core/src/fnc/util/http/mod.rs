@@ -54,7 +54,7 @@ pub async fn head(ctx: &Context, uri: Strand, opts: impl Into<Object>) -> Result
 	// Start a new HEAD request
 	let mut req = cli.head(url);
 	// Add the User-Agent header
-	if cfg!(not(target_arch = "wasm32")) {
+	if cfg!(not(all(target_arch = "wasm32", not(target_os = "wasi")))) {
 		req = req.header("User-Agent", "SurrealDB");
 	}
 	// Add specified header values
@@ -63,7 +63,7 @@ pub async fn head(ctx: &Context, uri: Strand, opts: impl Into<Object>) -> Result
 	}
 	// Send the request and wait
 	let res = match ctx.timeout() {
-		#[cfg(not(target_arch = "wasm32"))]
+		#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 		Some(d) => req.timeout(d).send().await?,
 		_ => req.send().await?,
 	};
@@ -83,7 +83,7 @@ pub async fn get(ctx: &Context, uri: Strand, opts: impl Into<Object>) -> Result<
 	// Start a new GET request
 	let mut req = cli.get(url);
 	// Add the User-Agent header
-	if cfg!(not(target_arch = "wasm32")) {
+	if cfg!(not(all(target_arch = "wasm32", not(target_os = "wasi")))) {
 		req = req.header("User-Agent", "SurrealDB");
 	}
 	// Add specified header values
@@ -114,7 +114,7 @@ pub async fn put(
 	// Start a new GET request
 	let mut req = cli.put(url);
 	// Add the User-Agent header
-	if cfg!(not(target_arch = "wasm32")) {
+	if cfg!(not(all(target_arch = "wasm32", not(target_os = "wasi")))) {
 		req = req.header("User-Agent", "SurrealDB");
 	}
 	// Add specified header values
@@ -147,7 +147,7 @@ pub async fn post(
 	// Start a new GET request
 	let mut req = cli.post(url);
 	// Add the User-Agent header
-	if cfg!(not(target_arch = "wasm32")) {
+	if cfg!(not(all(target_arch = "wasm32", not(target_os = "wasi")))) {
 		req = req.header("User-Agent", "SurrealDB");
 	}
 	// Add specified header values
@@ -158,7 +158,7 @@ pub async fn post(
 	req = encode_body(req, body);
 	// Send the request and wait
 	let res = match ctx.timeout() {
-		#[cfg(not(target_arch = "wasm32"))]
+		#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 		Some(d) => req.timeout(d).send().await?,
 		_ => req.send().await?,
 	};
@@ -180,7 +180,7 @@ pub async fn patch(
 	// Start a new GET request
 	let mut req = cli.patch(url);
 	// Add the User-Agent header
-	if cfg!(not(target_arch = "wasm32")) {
+	if cfg!(not(all(target_arch = "wasm32", not(target_os = "wasi")))) {
 		req = req.header("User-Agent", "SurrealDB");
 	}
 	// Add specified header values
@@ -191,7 +191,7 @@ pub async fn patch(
 	req = encode_body(req, body);
 	// Send the request and wait
 	let res = match ctx.timeout() {
-		#[cfg(not(target_arch = "wasm32"))]
+		#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 		Some(d) => req.timeout(d).send().await?,
 		_ => req.send().await?,
 	};
@@ -208,7 +208,7 @@ pub async fn delete(ctx: &Context, uri: Strand, opts: impl Into<Object>) -> Resu
 	// Start a new GET request
 	let mut req = cli.delete(url);
 	// Add the User-Agent header
-	if cfg!(not(target_arch = "wasm32")) {
+	if cfg!(not(all(target_arch = "wasm32", not(target_os = "wasi")))) {
 		req = req.header("User-Agent", "SurrealDB");
 	}
 	// Add specified header values
@@ -217,7 +217,7 @@ pub async fn delete(ctx: &Context, uri: Strand, opts: impl Into<Object>) -> Resu
 	}
 	// Send the request and wait
 	let res = match ctx.timeout() {
-		#[cfg(not(target_arch = "wasm32"))]
+		#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 		Some(d) => req.timeout(d).send().await?,
 		_ => req.send().await?,
 	};

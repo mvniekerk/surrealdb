@@ -1,5 +1,4 @@
-#![cfg(all(not(target_arch = "wasm32"), surrealdb_unstable))]
-
+#![cfg(all(not(all(target_arch = "wasm32", not(target_os = "wasi"))), surrealdb_unstable))]
 pub mod cache;
 pub mod error;
 mod ext;

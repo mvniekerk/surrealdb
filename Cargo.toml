@@ -95,7 +95,7 @@ surrealdb = { version = "2", path = "crates/sdk", features = ["protocol-http", "
 surrealdb-core = { version = "2", path = "crates/core" }
 tempfile = "3.8.1"
 thiserror = "1.0.63"
-tokio = { version = "1.40.0", features = ["macros", "signal"] }
+tokio = { version = "1.42.0", features = ["macros", "signal"] }
 tokio-stream = "0.1"
 tokio-tungstenite = "0.23.1"
 tokio-util = { version = "0.7.11", features = ["io"] }
@@ -163,3 +163,9 @@ unexpected_cfgs = { level = "warn", check-cfg = [
     'cfg(storage)',
     'cfg(surrealdb_unstable)',
 ] }
+
+[patch.crates-io]
+parking_lot = { git = "https://github.com/mvniekerk/parking_lot", branch = "master" }
+socket2 = { git = "https://github.com/mvniekerk/socket2", branch = "v0.5.5" }
+tokio = { git = "https://github.com/mvniekerk/tokio", branch = "wasix-1.42.0" }
+hyper-util = { git = "https://github.com/mvniekerk/hyper-util.git", branch = "master" }

@@ -31,20 +31,20 @@ use surrealdb_core::sql::{
 };
 use url::Url;
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use std::path::PathBuf;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use tokio::fs::OpenOptions;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use tokio::io;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use tokio_util::compat::FuturesAsyncReadCompatExt;
-#[cfg(target_arch = "wasm32")]
+#[cfg(all(target_arch = "wasm32", not(target_os = "wasi")))]
 use wasm_bindgen_futures::spawn_local;
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 pub(crate) mod native;
-#[cfg(target_arch = "wasm32")]
+#[cfg(all(target_arch = "wasm32", not(target_os = "wasi")))]
 pub(crate) mod wasm;
 
 // const SQL_PATH: &str = "sql";
@@ -165,7 +165,7 @@ struct AuthResponse {
 
 type BackupSender = channel::Sender<Result<Vec<u8>>>;
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 async fn export_file(request: RequestBuilder, path: PathBuf) -> Result<()> {
 	let mut response = request
 		.send()
@@ -209,16 +209,16 @@ async fn export_bytes(request: RequestBuilder, bytes: BackupSender) -> Result<()
 		}
 	};
 
-	#[cfg(not(target_arch = "wasm32"))]
+	#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 	tokio::spawn(future);
 
-	#[cfg(target_arch = "wasm32")]
+	#[cfg(all(target_arch = "wasm32", not(target_os = "wasi")))]
 	spawn_local(future);
 
 	Ok(())
 }
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 async fn import(request: RequestBuilder, path: PathBuf) -> Result<()> {
 	let file = match OpenOptions::new().read(true).open(&path).await {
 		Ok(path) => path,
@@ -423,7 +423,7 @@ async fn router(
 			vars.shift_remove(&key);
 			Ok(DbResponse::Other(CoreValue::None))
 		}
-		#[cfg(target_arch = "wasm32")]
+		#[cfg(all(target_arch = "wasm32", not(target_os = "wasi")))]
 		Command::ExportFile {
 			..
 		}
@@ -440,7 +440,7 @@ async fn router(
 			Err(Error::BackupsNotSupported.into())
 		}
 
-		#[cfg(not(target_arch = "wasm32"))]
+		#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 		Command::ExportFile {
 			path,
 			config,
@@ -475,7 +475,7 @@ async fn router(
 			export_bytes(request, bytes).await?;
 			Ok(DbResponse::Other(CoreValue::None))
 		}
-		#[cfg(not(target_arch = "wasm32"))]
+		#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 		Command::ExportMl {
 			path,
 			config,
@@ -504,7 +504,7 @@ async fn router(
 			export_bytes(request, bytes).await?;
 			Ok(DbResponse::Other(CoreValue::None))
 		}
-		#[cfg(not(target_arch = "wasm32"))]
+		#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 		Command::ImportFile {
 			path,
 		} => {
@@ -517,7 +517,7 @@ async fn router(
 			import(request, path).await?;
 			Ok(DbResponse::Other(CoreValue::None))
 		}
-		#[cfg(not(target_arch = "wasm32"))]
+		#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 		Command::ImportMl {
 			path,
 		} => {

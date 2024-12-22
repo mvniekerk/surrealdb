@@ -5,9 +5,9 @@
 use crate::err::Error;
 use bytes::Bytes;
 use futures::stream::BoxStream;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use object_store::local::LocalFileSystem;
-#[cfg(target_arch = "wasm32")]
+#[cfg(all(target_arch = "wasm32", not(target_os = "wasi")))]
 use object_store::memory::InMemory;
 use object_store::parse_url;
 use object_store::path::Path;
@@ -35,12 +35,12 @@ fn initialize_store(env_var: &str, default_dir: &str) -> Arc<dyn ObjectStore> {
 					panic!("Unable to create directory structure for {}", env_var)
 				});
 			}
-			#[cfg(not(target_arch = "wasm32"))]
+			#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 			{
 				// As long as the provided path is correct, the following should never panic
 				Arc::new(LocalFileSystem::new_with_prefix(path).unwrap())
 			}
-			#[cfg(target_arch = "wasm32")]
+			#[cfg(all(target_arch = "wasm32", not(target_os = "wasi")))]
 			{
 				Arc::new(InMemory::new())
 			}

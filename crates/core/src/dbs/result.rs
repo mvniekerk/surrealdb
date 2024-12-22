@@ -1,7 +1,7 @@
 use crate::ctx::Context;
 use crate::dbs::group::GroupsCollector;
 use crate::dbs::plan::Explanation;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use crate::dbs::store::asynchronous::AsyncMemoryOrdered;
 #[cfg(storage)]
 use crate::dbs::store::file::FileCollector;
@@ -17,7 +17,7 @@ pub(super) enum Results {
 	Memory(MemoryCollector),
 	MemoryRandom(MemoryRandom),
 	MemoryOrdered(MemoryOrdered),
-	#[cfg(not(target_arch = "wasm32"))]
+	#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 	AsyncMemoryOrdered(AsyncMemoryOrdered),
 	#[cfg(storage)]
 	File(Box<FileCollector>),
@@ -40,7 +40,7 @@ impl Results {
 			}
 		}
 		if let Some(ordering) = stm.order() {
-			#[cfg(not(target_arch = "wasm32"))]
+			#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 			if stm.parallel() {
 				return Ok(Self::AsyncMemoryOrdered(AsyncMemoryOrdered::new(ordering, None)));
 			}
@@ -70,7 +70,7 @@ impl Results {
 			Self::MemoryOrdered(c) => {
 				c.push(val);
 			}
-			#[cfg(not(target_arch = "wasm32"))]
+			#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 			Self::AsyncMemoryOrdered(c) => {
 				c.push(val).await?;
 			}
@@ -88,7 +88,7 @@ impl Results {
 		Ok(())
 	}
 
-	#[cfg(not(target_arch = "wasm32"))]
+	#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 	pub(super) async fn sort(&mut self, orders: &Ordering) -> Result<(), Error> {
 		match self {
 			#[cfg(storage)]
@@ -103,7 +103,7 @@ impl Results {
 		Ok(())
 	}
 
-	#[cfg(target_arch = "wasm32")]
+	#[cfg(all(target_arch = "wasm32", not(target_os = "wasi")))]
 	pub(super) fn sort(&mut self, orders: &Ordering) {
 		match self {
 			Self::MemoryOrdered(c) => c.sort(),
@@ -123,7 +123,7 @@ impl Results {
 			Self::None => {}
 			Self::Memory(m) => m.start_limit(start, limit),
 			Self::MemoryOrdered(m) => m.start_limit(start, limit),
-			#[cfg(not(target_arch = "wasm32"))]
+			#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 			Self::AsyncMemoryOrdered(c) => {
 				c.start_limit(start, limit).await?;
 			}
@@ -144,7 +144,7 @@ impl Results {
 			Self::None => 0,
 			Self::Memory(s) => s.len(),
 			Self::MemoryOrdered(s) => s.len(),
-			#[cfg(not(target_arch = "wasm32"))]
+			#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 			Self::AsyncMemoryOrdered(c) => c.len(),
 			Self::MemoryRandom(s) => s.len(),
 			#[cfg(storage)]
@@ -157,7 +157,7 @@ impl Results {
 		Ok(match self {
 			Self::Memory(m) => m.take_vec(),
 			Self::MemoryOrdered(c) => c.take_vec(),
-			#[cfg(not(target_arch = "wasm32"))]
+			#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 			Self::AsyncMemoryOrdered(c) => c.take_vec().await?,
 			Self::MemoryRandom(c) => c.take_vec(),
 			#[cfg(storage)]
@@ -173,7 +173,7 @@ impl Results {
 				s.explain(exp);
 			}
 			Self::MemoryOrdered(c) => c.explain(exp),
-			#[cfg(not(target_arch = "wasm32"))]
+			#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 			Self::AsyncMemoryOrdered(c) => c.explain(exp),
 			Self::MemoryRandom(c) => c.explain(exp),
 			#[cfg(storage)]

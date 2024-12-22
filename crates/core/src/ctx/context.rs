@@ -9,7 +9,7 @@ use crate::idx::planner::executor::QueryExecutor;
 use crate::idx::planner::{IterationStage, QueryPlanner};
 use crate::idx::trees::store::IndexStores;
 use crate::kvs::cache::ds::Cache;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use crate::kvs::IndexBuilder;
 use crate::kvs::Transaction;
 use crate::sql::value::Value;
@@ -51,7 +51,7 @@ pub struct MutableContext {
 	// The index store
 	index_stores: IndexStores,
 	// The index concurrent builders
-	#[cfg(not(target_arch = "wasm32"))]
+	#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 	index_builder: Option<IndexBuilder>,
 	// Capabilities
 	capabilities: Arc<Capabilities>,
@@ -104,7 +104,7 @@ impl MutableContext {
 			capabilities: Arc::new(Capabilities::default()),
 			index_stores: IndexStores::default(),
 			cache: None,
-			#[cfg(not(target_arch = "wasm32"))]
+			#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 			index_builder: None,
 			#[cfg(storage)]
 			temporary_directory: None,
@@ -126,7 +126,7 @@ impl MutableContext {
 			capabilities: parent.capabilities.clone(),
 			index_stores: parent.index_stores.clone(),
 			cache: parent.cache.clone(),
-			#[cfg(not(target_arch = "wasm32"))]
+			#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 			index_builder: parent.index_builder.clone(),
 			#[cfg(storage)]
 			temporary_directory: parent.temporary_directory.clone(),
@@ -151,7 +151,7 @@ impl MutableContext {
 			capabilities: parent.capabilities.clone(),
 			index_stores: parent.index_stores.clone(),
 			cache: parent.cache.clone(),
-			#[cfg(not(target_arch = "wasm32"))]
+			#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 			index_builder: parent.index_builder.clone(),
 			#[cfg(storage)]
 			temporary_directory: parent.temporary_directory.clone(),
@@ -176,7 +176,7 @@ impl MutableContext {
 			capabilities: from.capabilities.clone(),
 			index_stores: from.index_stores.clone(),
 			cache: from.cache.clone(),
-			#[cfg(not(target_arch = "wasm32"))]
+			#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 			index_builder: from.index_builder.clone(),
 			#[cfg(storage)]
 			temporary_directory: from.temporary_directory.clone(),
@@ -192,7 +192,7 @@ impl MutableContext {
 		capabilities: Capabilities,
 		index_stores: IndexStores,
 		cache: Arc<Cache>,
-		#[cfg(not(target_arch = "wasm32"))] index_builder: IndexBuilder,
+		#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))] index_builder: IndexBuilder,
 		#[cfg(storage)] temporary_directory: Option<Arc<PathBuf>>,
 	) -> Result<MutableContext, Error> {
 		let mut ctx = Self {
@@ -207,7 +207,7 @@ impl MutableContext {
 			capabilities: Arc::new(capabilities),
 			index_stores,
 			cache: Some(cache),
-			#[cfg(not(target_arch = "wasm32"))]
+			#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 			index_builder: Some(index_builder),
 			#[cfg(storage)]
 			temporary_directory,
@@ -329,7 +329,7 @@ impl MutableContext {
 	}
 
 	/// Get the index_builder for this context/ds
-	#[cfg(not(target_arch = "wasm32"))]
+	#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 	pub(crate) fn get_index_builder(&self) -> Option<&IndexBuilder> {
 		self.index_builder.as_ref()
 	}

@@ -1,5 +1,5 @@
 fn main() {
-	if cfg!(target_arch = "wasm32") {
+	if cfg!(all(target_arch = "wasm32", not(target_os = "wasi"))) {
 		println!("cargo:rustc-cfg=wasm");
 		println!("cargo::rustc-check-cfg=cfg(wasm)");
 	}

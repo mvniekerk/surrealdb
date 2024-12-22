@@ -7,7 +7,7 @@ use crate::idx::ft::FtIndex;
 use crate::idx::trees::mtree::MTreeIndex;
 use crate::idx::IndexKeyBase;
 use crate::key;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use crate::kvs::ConsumeResult;
 use crate::kvs::TransactionType;
 use crate::sql::array::Array;
@@ -71,7 +71,7 @@ impl Document {
 		n: Option<Vec<Value>>,
 		rid: &Thing,
 	) -> Result<(), Error> {
-		#[cfg(not(target_arch = "wasm32"))]
+		#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 		let (o, n) = if let Some(ib) = ctx.get_index_builder() {
 			match ib.consume(ctx, ix, o, n, rid).await? {
 				// The index builder consumed the value, which means it is currently building the index asynchronously,

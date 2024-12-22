@@ -11,9 +11,9 @@ pub async fn sleep(ctx: &Context, (dur,): (Duration,)) -> Result<Value, Error> {
 		(_, d) => d,
 	};
 	// Sleep for the specified time
-	#[cfg(target_arch = "wasm32")]
+	#[cfg(all(target_arch = "wasm32", not(target_os = "wasi")))]
 	wasmtimer::tokio::sleep(dur).await;
-	#[cfg(not(target_arch = "wasm32"))]
+	#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 	tokio::time::sleep(dur).await;
 	// Ok all good
 	Ok(Value::None)

@@ -263,7 +263,7 @@ impl QueryPlanner {
 		&self.fallbacks
 	}
 
-	#[cfg(not(target_arch = "wasm32"))]
+	#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 	pub(crate) fn is_order(&self, irf: &IteratorRef) -> bool {
 		self.orders.contains(irf)
 	}

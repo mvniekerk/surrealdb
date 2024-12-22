@@ -106,13 +106,13 @@ impl DefineIndexStatement {
 		.await?;
 		// Clear the cache
 		txn.clear();
-		#[cfg(not(target_arch = "wasm32"))]
+		#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 		if self.concurrently {
 			self.async_index(ctx, opt)?;
 		} else {
 			self.sync_index(stk, ctx, opt, doc).await?;
 		}
-		#[cfg(target_arch = "wasm32")]
+		#[cfg(all(target_arch = "wasm32", not(target_os = "wasi")))]
 		self.sync_index(stk, ctx, opt, doc).await?;
 		// Ok all good
 		Ok(Value::None)
@@ -137,7 +137,7 @@ impl DefineIndexStatement {
 		Ok(())
 	}
 
-	#[cfg(not(target_arch = "wasm32"))]
+	#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 	fn async_index(&self, ctx: &Context, opt: &Options) -> Result<(), Error> {
 		ctx.get_index_builder().ok_or_else(|| fail!("No Index Builder"))?.build(
 			ctx,

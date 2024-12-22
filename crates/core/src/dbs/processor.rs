@@ -1,6 +1,6 @@
 use crate::cnf::NORMAL_FETCH_SIZE;
 use crate::ctx::{Context, MutableContext};
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use crate::dbs::distinct::AsyncDistinct;
 use crate::dbs::distinct::SyncDistinct;
 use crate::dbs::{Iterable, Iterator, Operable, Options, Processed, Statement};
@@ -12,7 +12,7 @@ use crate::kvs::{Key, Transaction, Val};
 use crate::sql::dir::Dir;
 use crate::sql::id::range::IdRange;
 use crate::sql::{Edges, Table, Thing, Value};
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use async_channel::Sender;
 use futures::StreamExt;
 use reblessive::tree::Stk;
@@ -54,7 +54,7 @@ impl Iterable {
 		Ok(())
 	}
 
-	#[cfg(not(target_arch = "wasm32"))]
+	#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 	pub(super) async fn channel(
 		self,
 		ctx: &Context,
@@ -358,10 +358,10 @@ impl Collector for ConcurrentDistinctCollector<'_> {
 		Ok(())
 	}
 }
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 pub(super) struct ParallelCollector(Sender<Collected>);
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 impl ParallelCollector {
 	pub(super) async fn process(
 		distinct: Option<&AsyncDistinct>,
@@ -378,7 +378,7 @@ impl ParallelCollector {
 		Ok(())
 	}
 }
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 impl Collector for ParallelCollector {
 	async fn collect(&mut self, collected: Collected) -> Result<(), Error> {
 		self.0.send(collected).await.map_err(|e| Error::Channel(e.to_string()))?;

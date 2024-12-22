@@ -3,14 +3,14 @@ use std::path::PathBuf;
 
 #[derive(Debug)]
 #[non_exhaustive]
-#[cfg_attr(docsrs, doc(cfg(not(target_arch = "wasm32"))))]
+#[cfg_attr(docsrs, doc(cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))))]
 pub enum ExportDestination {
 	File(PathBuf),
 	Memory,
 }
 
 /// A trait for converting inputs into database export locations
-#[cfg_attr(docsrs, doc(cfg(not(target_arch = "wasm32"))))]
+#[cfg_attr(docsrs, doc(cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))))]
 pub trait IntoExportDestination<R> {
 	/// Converts an input into a database export location
 	fn into_export_destination(self) -> R;

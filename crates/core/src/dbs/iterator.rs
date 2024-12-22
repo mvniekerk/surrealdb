@@ -1,12 +1,12 @@
 use crate::ctx::Context;
 use crate::ctx::{Canceller, MutableContext};
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use crate::dbs::distinct::AsyncDistinct;
 use crate::dbs::distinct::SyncDistinct;
 use crate::dbs::plan::Plan;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use crate::dbs::processor::Collected;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use crate::dbs::processor::ParallelCollector;
 use crate::dbs::result::Results;
 use crate::dbs::Options;
@@ -23,16 +23,16 @@ use crate::sql::table::Table;
 use crate::sql::thing::Thing;
 use crate::sql::value::Value;
 use crate::sql::{Fields, Id, IdRange};
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use async_channel::{bounded, unbounded, Receiver, Sender};
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use async_executor::Executor;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use futures::executor::block_on;
 use reblessive::tree::Stk;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use reblessive::TreeStack;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 use std::future::Future;
 use std::mem;
 use std::sync::Arc;
@@ -369,9 +369,9 @@ impl Iterator {
 			self.output_group(stk, ctx, opt, stm).await?;
 			// Process any ORDER BY clause
 			if let Some(orders) = stm.order() {
-				#[cfg(not(target_arch = "wasm32"))]
+				#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 				self.results.sort(orders).await?;
-				#[cfg(target_arch = "wasm32")]
+				#[cfg(all(target_arch = "wasm32", not(target_os = "wasi")))]
 				self.results.sort(orders);
 			}
 			// Process any START & LIMIT clause
@@ -430,7 +430,7 @@ impl Iterator {
 	}
 
 	/// Check if the iteration can be limited per iterator
-	#[cfg(not(target_arch = "wasm32"))]
+	#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 	fn check_set_start_limit(&mut self, ctx: &Context, stm: &Statement<'_>) -> bool {
 		// If there are groups we can't
 		if stm.group().is_some() {
@@ -456,7 +456,7 @@ impl Iterator {
 		false
 	}
 
-	#[cfg(not(target_arch = "wasm32"))]
+	#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 	fn compute_start_limit(&mut self, ctx: &Context, stm: &Statement<'_>) {
 		if self.check_set_start_limit(ctx, stm) {
 			if let Some(l) = self.limit {
@@ -552,7 +552,7 @@ impl Iterator {
 		Ok(())
 	}
 
-	#[cfg(target_arch = "wasm32")]
+	#[cfg(all(target_arch = "wasm32", not(target_os = "wasi")))]
 	async fn iterate(
 		&mut self,
 		stk: &mut Stk,
@@ -572,7 +572,7 @@ impl Iterator {
 		Ok(())
 	}
 
-	#[cfg(not(target_arch = "wasm32"))]
+	#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 	async fn iterate(
 		&mut self,
 		stk: &mut Stk,
@@ -643,7 +643,7 @@ impl Iterator {
 		}
 	}
 
-	#[cfg(not(target_arch = "wasm32"))]
+	#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 	async fn collecting<'a>(
 		ctx: &'a Context,
 		opt: &'a Options,
@@ -658,7 +658,7 @@ impl Iterator {
 		}
 	}
 
-	#[cfg(not(target_arch = "wasm32"))]
+	#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 	async fn processing<'a>(
 		ctx: &'a Context,
 		opt: &'a Options,
@@ -684,7 +684,7 @@ impl Iterator {
 		}
 	}
 
-	#[cfg(not(target_arch = "wasm32"))]
+	#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 	async fn computing<'a>(
 		ctx: &'a Context,
 		opt: &'a Options,
@@ -779,7 +779,7 @@ impl Iterator {
 		}
 	}
 
-	#[cfg(not(target_arch = "wasm32"))]
+	#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 	fn execute(
 		max_threads: usize,
 		signal: Sender<()>,

@@ -1,4 +1,5 @@
-#![cfg(not(target_arch = "wasm32"))]
+
+#[cfg(not(all(target_arch = "wasm32", not(target_os = "wasi"))))]
 
 use async_executor::{Executor, Task};
 use std::future::Future;
