@@ -18,7 +18,7 @@ default = [
     "allocator",
     "storage-mem",
     "storage-surrealkv",
-    "storage-surrealcs",
+#    "storage-surrealcs",
 #    "storage-rocksdb",
     "scripting",
     "http",
@@ -74,7 +74,7 @@ glob = "0.3.1"
 http = "1.1.0"
 http-body = "1.0.0"
 http-body-util = "0.1.1"
-hyper = "1.4.1"
+hyper = "1.5.2"
 num_cpus = "1.16.0"
 opentelemetry = { version = "0.24" }
 opentelemetry_sdk = { version = "0.24", features = ["rt-tokio"] }
@@ -83,6 +83,7 @@ pin-project-lite = "0.2.13"
 pprof = { version = "0.14.0", features = ["flamegraph", "prost-codec"], optional = true }
 rand = "0.8.5"
 reqwest = { version = "0.12.7", default-features = false, features = ["blocking", "gzip", "http2"] }
+#reqwest = { version = "0.11.18", default-features = false, features = ["blocking", "gzip", "http2"] }
 revision = { version = "0.10.0", features = ["chrono", "geo", "roaring", "regex", "rust_decimal", "uuid"] }
 rmpv = "1.0.1"
 rust_decimal = "1.36.0"
@@ -99,9 +100,10 @@ tokio = { version = "1.42.0", features = ["macros", "signal"] }
 tokio-stream = "0.1"
 tokio-tungstenite = "0.23.1"
 tokio-util = { version = "0.7.11", features = ["io"] }
-tower = "0.4.13"
-tower-http = { version = "0.5.2", features = ["trace", "sensitive-headers", "auth", "request-id", "util", "catch-panic", "cors", "set-header", "limit", "add-extension", "compression-full"] }
-tower-service = "0.3.3"
+#tower = "0.4.13"
+tower = { git = "https://github.com/mvniekerk/tower", branch = "master" }
+tower-http = { version = "0.5.2", features = ["trace", "sensitive-headers", "auth", "request-id", "util", "catch-panic", "cors", "set-header", "limit", "add-extension"] }
+tower-service = "0.3"
 tracing = "0.1"
 tracing-appender = "0.2.3"
 tracing-opentelemetry = "0.25.0"
@@ -170,3 +172,8 @@ socket2 = { git = "https://github.com/mvniekerk/socket2", branch = "v0.5.5" }
 tokio = { git = "https://github.com/mvniekerk/tokio", branch = "wasix-1.42.0" }
 hyper-util = { git = "https://github.com/mvniekerk/hyper-util.git", branch = "master" }
 hyper = { git = "https://github.com/mvniekerk/hyper", branch = "wasix-v1.5.2" }
+tower = { git = "https://github.com/mvniekerk/tower", branch = "master" }
+tower-service = { git = "https://github.com/mvniekerk/tower", branch = "master" }
+tower-layer = { git = "https://github.com/mvniekerk/tower", branch = "master" }
+reqwest = { git = "https://github.com/mvniekerk/reqwest", branch = "master" }
+h2 = { git = "https://github.com/mvniekerk/h2", branch = "wasix-v0.4.7"}
